@@ -1,6 +1,6 @@
 export const Footer = () => {
   return (
-    <footer className="w-full bg-primary bottom-0 flex flex-col sm:flex-row justify-center items-center sm:justify-between p-10">
+    <footer className="w-full bottom-0 bg-primary flex flex-col sm:flex-row justify-center items-center sm:justify-between p-10">
       <div className="sm:m-0 m-10 flex flex-row justify-center items-center" style={{width: "300px"}}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
