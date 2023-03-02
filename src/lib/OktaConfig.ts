@@ -4,5 +4,6 @@ export const OktaConfig = {
     redirectUri: process.env.REACT_APP_oktaRedirectURI,
     scopes: ['openid','profile','email'],
     pkce: true,
-    disableHttpsChecks: true
+    disableHttpsChecks: true,
+    registration: true
 }

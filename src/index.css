@@ -39,3 +39,13 @@ code {
 .okta-container {
   min-height: calc(100vh - 404px);
 }
+
+.no-scroll-div {
+  min-height: calc(100vh - 304px);
+}
+
+@media all and (max-width: 768px) {
+.no-scroll-div {
+  min-height: calc(100vh - 248px);
+}
+}

@@ -1,13 +1,15 @@
-import { Fragment } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
-import { useOktaAuth } from "@okta/okta-react";
+import { User as FirebaseUser, onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "../../FirebaseConfig";
+
 
 export const NavBar = () => {
 
-  const { oktaAuth, authState } = useOktaAuth();
-  const handleLogout = async () => oktaAuth.signOut();
+  const [authUser, setAuthUser] = useState<FirebaseUser | null>(null);
+
 
   const navigation = [
     { name: "Menu", href: "#" },
@@ -17,6 +19,27 @@ export const NavBar = () => {
   function classNames(...classes: any) {
     return classes.filter(Boolean).join(" ");
   }
+
+  useEffect(() => {
+    const listen = onAuthStateChanged(auth, (user: any) => {
+      if (user) {
+        setAuthUser(user);
+      } else {
+        setAuthUser(null);
+      }
+    });
+
+    return () => {
+      listen();
+    };
+  });
+
+  const userSignOut = () => {
+    signOut(auth)
+      .then(() => console.log("sign out successful"))
+      .catch((e) => console.log(e));
+  };
+
 
   return (
     <Disclosure as="nav" className="bg-primary">
@@ -125,32 +148,35 @@ export const NavBar = () => {
                           </a>
                         )}
                       </Menu.Item>
-                      {!authState?.isAuthenticated ? (   <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            to={"/login"}
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Log in
-                          </Link>
-                        )}
-                      </Menu.Item>) : (   <Menu.Item>
-                        {({ active }) => (
-                          <button
-                            onClick={handleLogout}
-                            className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
-                            )}
-                          >
-                            Sign out
-                          </button>
-                        )}
-                      </Menu.Item>)}
-                   
+                      {!authUser ? (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <Link
+                              to={"/login"}
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
+                            >
+                              Log in
+                            </Link>
+                          )}
+                        </Menu.Item>
+                      ) : (
+                        <Menu.Item>
+                          {({ active }) => (
+                            <button
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700"
+                              )}
+                              onClick={userSignOut}
+                            >
+                              Sign out
+                            </button>
+                          )}
+                        </Menu.Item>
+                      )}
                     </Menu.Items>
                   </Transition>
                 </Menu>
