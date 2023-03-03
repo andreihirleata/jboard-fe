@@ -6,10 +6,12 @@ import { createUserWithEmailAndPassword } from "firebase/auth";
 const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [httpError, setHttpError] = useState(null);
+  const [passwordConfirm,setPasswordConfirm] = useState("");
+  const [httpError, setHttpError] = useState("");
 
   const signUp = (e: any) => {
     e.preventDefault();
+    if(password === passwordConfirm) {
     createUserWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         console.log(userCredentials);
@@ -17,6 +19,9 @@ const SignUp = () => {
       .catch((error) => {
       setHttpError(handleLoginError(error))
       console.log(error.code)});
+    } else {
+      setHttpError("Password do not match.");
+    }
   };
 
   const handleLoginError = (err: any) => {
@@ -57,8 +62,8 @@ const SignUp = () => {
         <input
           type="password"
           placeholder="Confirm your password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          value={passwordConfirm}
+          onChange={(e) => setPasswordConfirm(e.target.value)}
           className="mb-[30px]"
           autoComplete="chrome-off"
         />
